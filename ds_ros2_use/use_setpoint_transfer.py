@@ -9,16 +9,18 @@ class UseSetpointTransfer(Node):
 
     def __init__(self):
         # Init subscriber and
-        super().__init__('setpoint_subscriber')
-        super().__init__('setpoint_publisher')
+        super().__init__('use_setpoint_subscriber')
+        super().__init__('use_setpoint_publisher')
 
         self.subscription = self.create_subscription(TrajectorySetpoint, 'bs_use_setpoint', self.recv_setpoints, 10)
         self.publisher_ = self.create_publisher(TrajectorySetpoint, 'use_drone_setpoint', 10)
+        
+        self.i = 0
 
     def recv_setpoints(self, msg):
-        self.get_logger().info('I recieved: "%s"' % msg.x)
         self.publisher_.publish(msg)
-        self.get_logger().info('Re-transfering: "%s"' % msg.x)
+        self.i += 1
+        self.get_logger().info('Transfered TrajectorySetpoint: %d' % self.i)
 
 
 def main(args=None):
