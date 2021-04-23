@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'use_setpoint_transfer = ds_ros2_use.use_setpoint_transfer:main'
+        	'use_transfer = ds_ros2_use.use_transfer:main'
         ],
     },
 )
