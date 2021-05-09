@@ -11,21 +11,21 @@ class Transfer(Node):
 
     def __init__(self):
         # Init subscriber and
-        super().__init__('use_transfer')
+        super().__init__('use_01_transfer')
 
         # Trajectory setpoint transfer
-        self.trajectory_subscriber_ = self.create_subscription(TrajectorySetpoint, 'bs_use_setpoint', self.recv_setpoints, 10)
+        self.trajectory_subscriber_ = self.create_subscription(TrajectorySetpoint, 'bs_use_01_setpoint', self.recv_setpoints, 10)
 
-        self.trajectory_publisher_01_ = self.create_publisher(TrajectorySetpoint, '/drone_01/use_drone_setpoint', 10)
-        self.trajectory_publisher_02_ = self.create_publisher(TrajectorySetpoint, '/drone_02/use_drone_setpoint', 10)
-        self.trajectory_publisher_03_ = self.create_publisher(TrajectorySetpoint, '/drone_03/use_drone_setpoint', 10)
+        self.trajectory_publisher_01_ = self.create_publisher(TrajectorySetpoint, '/drone_01/use_01_drone_setpoint', 10)
+        self.trajectory_publisher_02_ = self.create_publisher(TrajectorySetpoint, '/drone_02/use_01_drone_setpoint', 10)
+        self.trajectory_publisher_03_ = self.create_publisher(TrajectorySetpoint, '/drone_03/use_01_drone_setpoint', 10)
 
         # Drone control transfer
-        self.droneControl_subscriber = self.create_subscription(DroneControl, 'bs_use_control', self.recv_control, 10)
+        self.droneControl_subscriber = self.create_subscription(DroneControl, 'bs_use_01_control', self.recv_control, 10)
 
-        self.droneControl_publisher_01_ = self.create_publisher(DroneControl, '/drone_01/use_drone_control', 10)
-        self.droneControl_publisher_02_ = self.create_publisher(DroneControl, '/drone_02/use_drone_control', 10)
-        self.droneControl_publisher_03_ = self.create_publisher(DroneControl, '/drone_03/use_drone_control', 10)
+        self.droneControl_publisher_01_ = self.create_publisher(DroneControl, '/drone_01/use_01_drone_control', 10)
+        self.droneControl_publisher_02_ = self.create_publisher(DroneControl, '/drone_02/use_01_drone_control', 10)
+        self.droneControl_publisher_03_ = self.create_publisher(DroneControl, '/drone_03/use_01_drone_control', 10)
 
         # Number of messages sent variables
         self.i_trajectory = 0
