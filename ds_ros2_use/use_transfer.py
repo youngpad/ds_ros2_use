@@ -13,35 +13,23 @@ class Transfer(Node):
         # Init subscriber and
         super().__init__('use_transfer')
 
-        # Trajectory setpoint transfer
+        # Get namespace this node is started in
+        self.my_namespace = super().get_namespace()
+
+        # Trajectory setpoint transfer subscriber and publishers
         self.trajectory_subscriber_ = self.create_subscription(TrajectorySetpoint, 'bs_use_setpoint', self.recv_setpoints, 10)
+        self.trajectory_publishers = [0]
+        for drone in range (1,10):
+            self.trajectory_publishers.append(self.create_publisher(TrajectorySetpoint, self.my_namespace + '/drone_0' + str(drone) + '/use_drone_setpoint', 10))
+        self.trajectory_publishers.append(self.create_publisher(TrajectorySetpoint, self.my_namespace + '/drone_10' + '/use_drone_setpoint', 10))
 
-        self.trajectory_publisher_01_ = self.create_publisher(TrajectorySetpoint, '/drone_01/use_drone_setpoint', 10)
-        self.trajectory_publisher_02_ = self.create_publisher(TrajectorySetpoint, '/drone_02/use_drone_setpoint', 10)
-        self.trajectory_publisher_03_ = self.create_publisher(TrajectorySetpoint, '/drone_03/use_drone_setpoint', 10)
-        self.trajectory_publisher_04_ = self.create_publisher(TrajectorySetpoint, '/drone_04/use_drone_setpoint', 10)
-        self.trajectory_publisher_05_ = self.create_publisher(TrajectorySetpoint, '/drone_05/use_drone_setpoint', 10)
-        self.trajectory_publisher_06_ = self.create_publisher(TrajectorySetpoint, '/drone_06/use_drone_setpoint', 10)
-        self.trajectory_publisher_07_ = self.create_publisher(TrajectorySetpoint, '/drone_07/use_drone_setpoint', 10)
-        self.trajectory_publisher_08_ = self.create_publisher(TrajectorySetpoint, '/drone_08/use_drone_setpoint', 10)
-        self.trajectory_publisher_09_ = self.create_publisher(TrajectorySetpoint, '/drone_09/use_drone_setpoint', 10)
-        self.trajectory_publisher_10_ = self.create_publisher(TrajectorySetpoint, '/drone_10/use_drone_setpoint', 10)
-        
 
-        # Drone control transfer
+        # Drone control transfer subscriber and publishers
         self.droneControl_subscriber = self.create_subscription(DroneControl, 'bs_use_control', self.recv_control, 10)
-
-        self.droneControl_publisher_01_ = self.create_publisher(DroneControl, '/drone_01/use_drone_control', 10)
-        self.droneControl_publisher_02_ = self.create_publisher(DroneControl, '/drone_02/use_drone_control', 10)
-        self.droneControl_publisher_03_ = self.create_publisher(DroneControl, '/drone_03/use_drone_control', 10)
-        self.droneControl_publisher_04_ = self.create_publisher(DroneControl, '/drone_04/use_drone_control', 10)
-        self.droneControl_publisher_05_ = self.create_publisher(DroneControl, '/drone_05/use_drone_control', 10)
-        self.droneControl_publisher_06_ = self.create_publisher(DroneControl, '/drone_06/use_drone_control', 10)
-        self.droneControl_publisher_07_ = self.create_publisher(DroneControl, '/drone_07/use_drone_control', 10)
-        self.droneControl_publisher_08_ = self.create_publisher(DroneControl, '/drone_08/use_drone_control', 10)
-        self.droneControl_publisher_09_ = self.create_publisher(DroneControl, '/drone_09/use_drone_control', 10)
-        self.droneControl_publisher_10_ = self.create_publisher(DroneControl, '/drone_10/use_drone_control', 10)
-        
+        self.droneControl_publishers = [0]
+        for drone in range (1,10):
+            self.droneControl_publishers.append(self.create_publisher(DroneControl, self.my_namespace + '/drone_0' + str(drone) + '/use_drone_control', 10))
+        self.droneControl_publishers.append(self.create_publisher(DroneControl, self.my_namespace + '/drone_10' + '/use_drone_control', 10))
 
         # Number of messages sent variables
         self.i_trajectory = 0
@@ -51,36 +39,12 @@ class Transfer(Node):
     def recv_setpoints(self, msg):
         # Transfer setpoint to correct drone
         if (msg.drone == 999):
-            self.trajectory_publisher_01_.publish(msg)
-            self.trajectory_publisher_02_.publish(msg)
-            self.trajectory_publisher_03_.publish(msg)
-            self.trajectory_publisher_04_.publish(msg)
-            self.trajectory_publisher_05_.publish(msg)
-            self.trajectory_publisher_06_.publish(msg)
-            self.trajectory_publisher_07_.publish(msg)
-            self.trajectory_publisher_08_.publish(msg)
-            self.trajectory_publisher_09_.publish(msg)
-            self.trajectory_publisher_10_.publish(msg)
-        elif (msg.drone == 1):
-            self.trajectory_publisher_01_.publish(msg)
-        elif (msg.drone == 2):
-            self.trajectory_publisher_02_.publish(msg)
-        elif (msg.drone == 3):
-            self.trajectory_publisher_03_.publish(msg)
-        elif (msg.drone == 4):
-            self.trajectory_publisher_04_.publish(msg)
-        elif (msg.drone == 5):
-            self.trajectory_publisher_05_.publish(msg)
-        elif (msg.drone == 6):
-            self.trajectory_publisher_06_.publish(msg)
-        elif (msg.drone == 7):
-            self.trajectory_publisher_07_.publish(msg)
-        elif (msg.drone == 8):
-            self.trajectory_publisher_08_.publish(msg)
-        elif (msg.drone == 9):
-            self.trajectory_publisher_09_.publish(msg)
-        elif (msg.drone == 10):
-            self.trajectory_publisher_10_.publish(msg)
+            for publisher in self.trajectory_publishers:
+                if (publisher != 0):
+                    publisher.publish(msg)
+
+        elif (msg.drone > 0 and msg.drone < 11):
+            self.trajectory_publishers[msg.drone].publish(msg)
 
         # Send log
         self.i_trajectory += 1
@@ -90,36 +54,12 @@ class Transfer(Node):
     def recv_control(self, msg):
         # Transfer control to correct drone
         if (msg.drone == 999):
-            self.droneControl_publisher_01_.publish(msg)
-            self.droneControl_publisher_02_.publish(msg)
-            self.droneControl_publisher_03_.publish(msg)
-            self.droneControl_publisher_04_.publish(msg)
-            self.droneControl_publisher_05_.publish(msg)
-            self.droneControl_publisher_06_.publish(msg)
-            self.droneControl_publisher_07_.publish(msg)
-            self.droneControl_publisher_08_.publish(msg)
-            self.droneControl_publisher_09_.publish(msg)
-            self.droneControl_publisher_10_.publish(msg)
-        elif (msg.drone == 1):
-            self.droneControl_publisher_01_.publish(msg)
-        elif (msg.drone == 2):
-            self.droneControl_publisher_02_.publish(msg)
-        elif (msg.drone == 3):
-            self.droneControl_publisher_03_.publish(msg)
-        elif (msg.drone == 4):
-            self.droneControl_publisher_04_.publish(msg)
-        elif (msg.drone == 5):
-            self.droneControl_publisher_05_.publish(msg)
-        elif (msg.drone == 6):
-            self.droneControl_publisher_06_.publish(msg)
-        elif (msg.drone == 7):
-            self.droneControl_publisher_07_.publish(msg)
-        elif (msg.drone == 8):
-            self.droneControl_publisher_08_.publish(msg)
-        elif (msg.drone == 9):
-            self.droneControl_publisher_09_.publish(msg)
-        elif (msg.drone == 10):
-            self.droneControl_publisher_10_.publish(msg)
+            for publisher in self.droneControl_publishers:
+                if (publisher != 0):
+                    publisher.publish(msg)
+
+        elif (msg.drone > 0 and msg.drone < 11):
+            self.droneControl_publishers[msg.drone].publish(msg)
 
         # Send log
         self.i_droneControl += 1
