@@ -2,34 +2,31 @@ import rclpy
 from rclpy.node import Node
 
 # Import correct msg
-from std_msgs.msg import String
 from ds_ros2_msgs.msg import TrajectorySetpoint
 from ds_ros2_msgs.msg import DroneControl
-#from px4_msgs.msg import TrajectorySetpoint
 
 class Transfer(Node):
 
     def __init__(self):
-        # Init subscriber and
+        # Init parent-class
         super().__init__('use_transfer')
 
         # Get namespace this node is started in
-        self.my_namespace = super().get_namespace()
+        self.my_namespace_ = super().get_namespace()
 
         # Trajectory setpoint transfer subscriber and publishers
         self.trajectory_subscriber_ = self.create_subscription(TrajectorySetpoint, 'bs_use_setpoint', self.recv_setpoints, 10)
         self.trajectory_publishers = [0]
-        for drone in range (1,10):
-            self.trajectory_publishers.append(self.create_publisher(TrajectorySetpoint, self.my_namespace + '/drone_0' + str(drone) + '/use_drone_setpoint', 10))
-        self.trajectory_publishers.append(self.create_publisher(TrajectorySetpoint, self.my_namespace + '/drone_10' + '/use_drone_setpoint', 10))
-
+        for drone in range(1,10):
+            self.trajectory_publishers.append(self.create_publisher(TrajectorySetpoint, self.my_namespace_ + '/drone_0' + str(drone) + '/use_drone_setpoint', 10))
+        self.trajectory_publishers.append(self.create_publisher(TrajectorySetpoint, self.my_namespace_ + '/drone_10' + '/use_drone_setpoint', 10))
 
         # Drone control transfer subscriber and publishers
         self.droneControl_subscriber = self.create_subscription(DroneControl, 'bs_use_control', self.recv_control, 10)
         self.droneControl_publishers = [0]
-        for drone in range (1,10):
-            self.droneControl_publishers.append(self.create_publisher(DroneControl, self.my_namespace + '/drone_0' + str(drone) + '/use_drone_control', 10))
-        self.droneControl_publishers.append(self.create_publisher(DroneControl, self.my_namespace + '/drone_10' + '/use_drone_control', 10))
+        for drone in range(1,10):
+            self.droneControl_publishers.append(self.create_publisher(DroneControl, self.my_namespace_ + '/drone_0' + str(drone) + '/use_drone_control', 10))
+        self.droneControl_publishers.append(self.create_publisher(DroneControl, self.my_namespace_ + '/drone_10' + '/use_drone_control', 10))
 
         # Number of messages sent variables
         self.i_trajectory = 0
